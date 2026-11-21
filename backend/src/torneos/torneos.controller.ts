@@ -7,12 +7,14 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
 import { AdminGuard } from './admin.guard.js';
 import { CreateTorneoDto } from './dto/create-torneo.dto.js';
 import { UpdateTorneoDto } from './dto/update-torneo.dto.js';
+import { TorneoFiltrosDto } from './dto/torneo-filtros.dto.js';
 import { TorneosService } from './torneos.service.js';
 
 @Controller('torneos')
@@ -20,8 +22,11 @@ export class TorneosController {
   constructor(private readonly torneosService: TorneosService) {}
 
   @Get()
-  findAll() {
-    return this.torneosService.findAll();
+  findAll(
+    @Query(new ValidationPipe({ transform: true }))
+    filtros: TorneoFiltrosDto,
+  ) {
+    return this.torneosService.findAll(filtros);
   }
 
   @Get(':id')
