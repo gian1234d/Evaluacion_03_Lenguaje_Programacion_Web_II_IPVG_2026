@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Inscripcion } from '../inscripciones/inscripcion.entity.js';
 
 export enum EstadoTorneo {
   PROXIMO = 'proximo',
@@ -37,4 +38,7 @@ export class Torneo {
     default: EstadoTorneo.PROXIMO,
   })
   estado: EstadoTorneo;
+
+  @OneToMany(() => Inscripcion, (inscripcion) => inscripcion.torneo)
+  inscripciones: Inscripcion[];
 }
