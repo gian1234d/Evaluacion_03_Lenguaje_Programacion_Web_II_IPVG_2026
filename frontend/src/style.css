@@ -89,6 +89,12 @@ body { margin: 0; min-width: 320px; }
 .tournament-form label { display: grid; gap: 7px; color: var(--text-h); font-weight: 700; }
 .tournament-form input, .tournament-form select { width: 100%; box-sizing: border-box; border: 1px solid var(--border); border-radius: 8px; padding: 11px; background: var(--bg); color: var(--text-h); }
 .tournament-form .button { grid-column: 1 / -1; justify-self: start; }
+.filters { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+.filters label, .inscription-form label { display: grid; gap: 7px; color: var(--text-h); font-weight: 700; }
+.filters input, .filters select, .inscription-form input { width: 100%; box-sizing: border-box; border: 1px solid var(--border); border-radius: 8px; padding: 10px; background: var(--bg); color: var(--text-h); }
+.inscription-form { display: flex; align-items: end; gap: 12px; max-width: 420px; margin-bottom: 20px; }
+.inscription-form label { flex: 1; }
+.success { color: #16a34a; }
 @media (max-width: 800px) {
   .topbar { padding: 14px 20px; }
   .topbar nav { gap: 10px; }

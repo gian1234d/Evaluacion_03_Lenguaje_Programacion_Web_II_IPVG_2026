@@ -3,6 +3,7 @@ import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { api } from '../services/api'
 import type { Torneo } from '../types/torneo'
+import InscripcionForm from '../components/InscripcionForm.vue'
 
 const route = useRoute()
 const torneo = ref<Torneo | null>(null)
@@ -28,6 +29,7 @@ onMounted(async () => {
       <div><span>Cierre de inscripción</span><strong>{{ new Date(torneo.cierreInscripcion).toLocaleString() }}</strong></div>
       <div><span>Cupo máximo</span><strong>{{ torneo.cupoMaximo }} equipos</strong></div>
     </div>
+    <InscripcionForm :torneo-id="torneo.id" />
     <RouterLink class="button" :to="`/torneos/${torneo.id}/editar`">Editar torneo</RouterLink>
   </section>
   <p v-else-if="error" class="alert">{{ error }}</p>

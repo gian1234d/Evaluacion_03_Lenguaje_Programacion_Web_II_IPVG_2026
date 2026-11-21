@@ -2,17 +2,26 @@
 import { onMounted, ref } from 'vue'
 import { api } from '../services/api'
 import type { Torneo } from '../types/torneo'
+import TorneoFiltros, { type FiltrosTorneo } from '../components/TorneoFiltros.vue'
 
 const torneos = ref<Torneo[]>([])
 const error = ref('')
 
-onMounted(async () => {
+async function cargar(filtros: FiltrosTorneo = { q: '', juego: '', estado: '', modalidad: '' }) {
   try {
-    torneos.value = await api<Torneo[]>('/torneos')
+    const params = new URLSearchParams()
+    if (filtros.q) params.set('q', filtros.q)
+    if (filtros.juego) params.set('juego', filtros.juego)
+    if (filtros.estado) params.set('estado', filtros.estado)
+    if (filtros.modalidad) params.set('modalidad', filtros.modalidad)
+    const query = params.toString()
+    torneos.value = await api<Torneo[]>(`/torneos${query ? `?${query}` : ''}`)
   } catch (e) {
     error.value = e instanceof Error ? e.message : 'No se pudieron cargar los torneos'
   }
-})
+}
+
+onMounted(() => cargar())
 </script>
 
 <template>
@@ -24,6 +33,7 @@ onMounted(async () => {
       </div>
       <RouterLink class="button" to="/torneos/nuevo">Nuevo torneo</RouterLink>
     </div>
+    <TorneoFiltros @cambiar="cargar" />
     <p v-if="error" class="alert">{{ error }}</p>
     <div v-else-if="!torneos.length" class="empty">No hay torneos disponibles.</div>
     <div v-else class="tournament-grid">
