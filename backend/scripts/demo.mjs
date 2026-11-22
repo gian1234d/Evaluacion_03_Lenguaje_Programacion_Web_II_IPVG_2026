@@ -103,7 +103,43 @@ await request(
   { ...torneo, cupoMaximo: 0 },
   adminToken,
 );
-await request('GET', '/usuarios/perfil', 200, undefined, estudianteToken);
+const perfil = await request(
+  'GET',
+  '/usuarios/perfil',
+  200,
+  undefined,
+  estudianteToken,
+);
+await request(
+  'PATCH',
+  '/usuarios/perfil',
+  200,
+  {
+    nombre: 'Capitán Demo',
+    alias: perfil.alias,
+    correo: perfil.correo,
+  },
+  estudianteToken,
+);
+await request(
+  'PATCH',
+  `/equipos/${equipos[1].id}`,
+  403,
+  {
+    nombre: 'Nombre rechazado',
+  },
+  estudianteToken,
+);
+const editado = await request(
+  'PATCH',
+  `/equipos/${equipos[0].id}`,
+  200,
+  {
+    integrantesIds: [equipos[1].capitanId],
+  },
+  estudianteToken,
+);
+assert.equal(editado.integrantes.length, 2);
 const primero = await request('POST', '/torneos', 201, torneo, adminToken);
 const segundo = await request(
   'POST',
@@ -121,7 +157,12 @@ assert.equal(filtrados.length, 2);
 const inscribir = (torneoId, equipoId, status, token = adminToken) =>
   request('POST', '/inscripciones', status, { torneoId, equipoId }, token);
 for (const torneoId of [primero.id, segundo.id]) {
-  await inscribir(torneoId, equipos[0].id, 201, estudianteToken);
+  const inscripcion = await inscribir(
+    torneoId,
+    equipos[0].id,
+    201,
+    estudianteToken,
+  );
   await inscribir(torneoId, equipos[0].id, 409, estudianteToken);
   await inscribir(torneoId, equipos[1].id, 201);
   await inscribir(torneoId, equipos[2].id, 409);
@@ -146,6 +187,13 @@ for (const torneoId of [primero.id, segundo.id]) {
     partidoData,
     adminToken,
   );
+  await request(
+    'DELETE',
+    `/inscripciones/${inscripcion.id}`,
+    409,
+    undefined,
+    adminToken,
+  );
   const resultado = {
     partidoId: partido.id,
     puntajeLocal: 3,
@@ -160,6 +208,27 @@ for (const torneoId of [primero.id, segundo.id]) {
   assert.equal(ranking[0].equipoId, equipos[0].id);
   assert.equal(ranking[0].puntos, 3);
 }
+const cerrado = await request(
+  'POST',
+  '/torneos',
+  201,
+  {
+    ...torneo,
+    nombre: `Temporal ${suffix}`,
+    cierreInscripcion: new Date(Date.now() - 86400000).toISOString(),
+  },
+  adminToken,
+);
+await inscribir(cerrado.id, equipos[0].id, 400, estudianteToken);
+await request(
+  'PATCH',
+  `/torneos/${cerrado.id}`,
+  200,
+  { estado: 'cancelado' },
+  adminToken,
+);
+await request('DELETE', `/torneos/${cerrado.id}`, 204, undefined, adminToken);
+await request('GET', `/torneos/${cerrado.id}`, 404);
 await request('GET', '/torneos/2147483647', 404);
 await request('GET', '/api-json', 200);
 console.log(
