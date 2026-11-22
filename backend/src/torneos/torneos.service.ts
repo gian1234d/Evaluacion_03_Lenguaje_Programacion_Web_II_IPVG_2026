@@ -65,6 +65,7 @@ export class TorneosService {
 
   async remove(id: number): Promise<void> {
     const resultado = await this.torneoRepository.delete(id);
-    if (!resultado.affected) throw new NotFoundException(`Torneo ${id} no encontrado`);
+    if (!resultado.affected)
+      throw new NotFoundException(`Torneo ${id} no encontrado`);
   }
 }

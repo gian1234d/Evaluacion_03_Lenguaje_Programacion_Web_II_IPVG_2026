@@ -1,8 +1,11 @@
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
 import {
   Body,
   Controller,
   Delete,
   Get,
+  HttpCode,
   Param,
   ParseIntPipe,
   Patch,
@@ -17,6 +20,7 @@ import { UpdateTorneoDto } from './dto/update-torneo.dto.js';
 import { TorneoFiltrosDto } from './dto/torneo-filtros.dto.js';
 import { TorneosService } from './torneos.service.js';
 
+@ApiTags('Torneos')
 @Controller('torneos')
 export class TorneosController {
   constructor(private readonly torneosService: TorneosService) {}
@@ -35,13 +39,15 @@ export class TorneosController {
   }
 
   @Post()
-  @UseGuards(AdminGuard)
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, AdminGuard)
   create(@Body(new ValidationPipe({ transform: true })) dto: CreateTorneoDto) {
     return this.torneosService.create(dto);
   }
 
   @Patch(':id')
-  @UseGuards(AdminGuard)
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, AdminGuard)
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body(new ValidationPipe({ transform: true })) dto: UpdateTorneoDto,
@@ -50,7 +56,9 @@ export class TorneosController {
   }
 
   @Delete(':id')
-  @UseGuards(AdminGuard)
+  @HttpCode(204)
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, AdminGuard)
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.torneosService.remove(id);
   }

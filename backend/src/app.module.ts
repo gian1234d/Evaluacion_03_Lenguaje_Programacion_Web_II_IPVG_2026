@@ -5,6 +5,13 @@ import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { TorneosModule } from './torneos/torneos.module.js';
 import { InscripcionesModule } from './inscripciones/inscripciones.module.js';
+import { PartidosModule } from './partidos/partidos.module.js';
+import { ResultadosModule } from './resultados/resultados.module.js';
+import { RankingModule } from './ranking/ranking.module.js';
+
+import { AuthModule } from './auth/auth.module.js';
+import { UsuariosModule } from './usuarios/usuarios.module.js';
+import { EquiposModule } from './equipos/equipos.module.js';
 
 @Module({
   imports: [
@@ -22,8 +29,14 @@ import { InscripcionesModule } from './inscripciones/inscripciones.module.js';
         synchronize: true,
       }),
     }),
+    AuthModule,
+    UsuariosModule,
+    EquiposModule,
     TorneosModule,
     InscripcionesModule,
+    PartidosModule,
+    ResultadosModule,
+    RankingModule,
   ],
   controllers: [AppController],
   providers: [AppService],
