@@ -44,7 +44,9 @@ export class ResultadosService {
             ? partido.equipoLocalId
             : partido.equipoVisitanteId;
       const resultado = resultadoRepository.create({
-        ...dto,
+        partidoId: dto.partidoId,
+        puntajeLocal: dto.puntajeLocal,
+        puntajeVisitante: dto.puntajeVisitante,
         ganadorId,
         registradoPorId: adminId,
       });
