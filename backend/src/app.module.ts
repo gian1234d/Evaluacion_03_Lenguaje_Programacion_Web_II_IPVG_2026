@@ -5,6 +5,7 @@ import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { PartidosModule } from './partidos/partidos.module.js';
 import { ResultadosModule } from './resultados/resultados.module.js';
+import { RankingModule } from './ranking/ranking.module.js';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { ResultadosModule } from './resultados/resultados.module.js';
     }),
     PartidosModule,
     ResultadosModule,
+    RankingModule,
   ],
   controllers: [AppController],
   providers: [AppService],
