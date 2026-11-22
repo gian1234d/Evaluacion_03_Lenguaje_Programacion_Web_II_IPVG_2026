@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { api } from '../services/api'
 
 const props = defineProps<{ torneoId: number }>()
+const emit = defineEmits<{ inscrito: [] }>()
 const equipoId = ref<number>(1)
 const mensaje = ref('')
 const error = ref('')
@@ -21,6 +22,7 @@ async function inscribir() {
       }),
     })
     mensaje.value = 'Inscripción registrada correctamente'
+    emit('inscrito')
   } catch (e) {
     error.value = e instanceof Error ? e.message : 'No se pudo completar la inscripción'
   }
